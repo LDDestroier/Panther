@@ -1,0 +1,212 @@
+os.loadAPI("Panther/System/API/Menu")
+
+local xs, ys = term.getSize()
+local menu = 0
+local selection = 1
+
+local colorF = fs.open("Panther/UserData/color.urd","r") 
+color = colorF.readAll()
+colorF.close()
+local currentPx = 0
+local currentPy = 0
+local icons = {}
+local currentDelPath
+
+local function drawIcon(name,image)
+	term.setCursorPos(2+currentPx,7+currentPy)
+	if not image then
+		term.setBackgroundColor(colors.white)
+		term.setTextColor(colors.gray)
+		write("\127\127\127\127\127\127\127\127")
+		term.setCursorPos(2+currentPx,8+currentPy)
+		write("\127\127\127\127\127\127\127\127")
+		term.setCursorPos(2+currentPx,9+currentPy)
+		write("\127\127\127\127\127\127\127\127")
+		term.setCursorPos(2+currentPx,10+currentPy)
+		write("\127\127\127\127\127\127\127\127")
+	else
+		
+	end
+	
+	table.insert(icons,2+currentPx)
+	table.insert(icons,6+currentPy)
+	table.insert(icons,name)
+	
+	if not name then name = "Unnamed" end
+	term.setCursorPos(2+currentPx+(string.len(name)/2)/2,11+currentPy)
+	write(tostring(name))
+	currentPx = currentPx + 9
+end
+
+function drawButton(x,y,padding,height,text)
+	term.setCursorPos(x,y)
+	paintutils.drawFilledBox(x,y,x+padding+string.len(text),y+height-1,colors.gray)
+	term.setCursorPos(x+padding,y+math.floor(height/2))
+	term.setTextColor(colors.lightGray)
+	write(text)
+end
+
+function drawTopbar()
+	term.setBackgroundColor(colors.gray)
+	term.setTextColor(colors.lightGray)
+	term.setCursorPos(1,1)
+	term.clearLine()
+	term.setCursorPos(3,1)
+	print("rograms")
+	term.setCursorPos(2,1)
+	term.setBackgroundColor(colors.blue)
+	term.setTextColor(colors.lightBlue)
+	write("P")
+	
+end
+
+local function clear()
+	local currentY_reset = 2
+	while currentY_reset <= ys do
+		term.setCursorPos(1,currentY_reset)
+		term.setBackgroundColor(colors.white)
+		term.clearLine()
+		currentY_reset = currentY_reset + 1
+	end
+	term.setCursorPos(1,2)
+end
+
+local function deletePrompt(path)
+	currentDelPath = path
+	clear()
+	menu = 2
+	term.setCursorPos(2,3)
+	term.setBackgroundColor(colors.white)
+	term.setTextColor(colors.gray)
+	print("Are you sure you want to delete this program?")
+	drawButton(2,5,2,3,"Yes ")
+	drawButton(10,5,2,3,"No ")
+	term.setTextColor(colors.lightGray)
+	term.setBackgroundColor(colors.white)
+	term.setCursorPos(2,ys-2)
+	write("Deleting: "..path)
+	term.setCursorPos(2,ys-1)
+	write("File Size: "..fs.getSize(path).."B")
+end
+
+local function install()
+	clear()
+	term.setCursorPos(2,3)
+	term.setBackgroundColor(colors.white)
+	term.setTextColor(colors.gray)
+	print("Enter Pastebin code")
+	term.setCursorPos(2,5)
+	paintutils.drawLine(2,5,30,5,colors.gray)
+	term.setBackgroundColor(colors.gray)
+	term.setTextColor(colors.lightGray)
+	term.setCursorPos(2,3)
+	id = read()
+	clear()
+	term.setCursorPos(2,3)
+	term.setBackgroundColor(colors.white)
+	term.setTextColor(colors.gray)
+	print("Enter program name")
+	term.setCursorPos(2,5)
+	paintutils.drawLine(2,5,30,5,colors.gray)
+	term.setBackgroundColor(colors.gray)
+	term.setTextColor(colors.lightGray)
+	term.setCursorPos(2,3)
+	path = read()
+	shell.run("pastebin get "..id.." Panther/InstalledPrograms/"..path)
+end
+
+local function drawProgram()
+	menu = 0
+	currentPx = 0
+	currentPy = 0
+
+	term.setBackgroundColor(colors.white)
+	term.clear()
+	
+	drawButton(2,3,2,3,"Install a Program ")
+	drawTopbar()
+	
+	local programs = fs.list("Panther/InstalledPrograms/")
+	for i, name in pairs(programs) do
+		programsFound = i
+		drawIcon(name)
+	end
+	if programsFound == 0 then
+		term.setCursorPos(17,2)
+		term.setBackgroundColor(colors.lightBlue)
+		term.setTextColor(colors.gray)
+		write("No programs have been installed.")
+	end
+end
+
+
+
+drawProgram()
+
+while true do
+	e = {os.pullEventRaw()}
+	if e[1] == "mouse_click" then
+		if e[2] == 1 then
+			if menu == 1 then
+				if e[3] >= 2 and e[3] <= 3+string.len("Shutdown  ") and e[4] >= ys-7 and e[4] <= ys-5 then
+					os.shutdown()
+				elseif e[3] >= 2 and e[3] <= 3+string.len(" Reboot   ") and e[4] >= ys-3 and e[4] <= ys-1 then
+					os.reboot()
+				elseif e[3] >= 2 and e[3] <= 3+string.len("Programs ") and e[4] >= 8 and e[4] <= 10 then
+					shell.run("Panther/System/Programs.sys")
+				elseif e[3] >= 2 and e[3] <= 6+string.len("Menu") and e[4] == 2 then
+					break
+				elseif e[3] == 13 and e[4] == 2 then
+					drawProgram()
+					menu = 0
+				elseif e[3] >= 2 and e[3] <= 3+string.len("Settings ") and e[4] >= 4 and e[4] <= 6 then
+					shell.run("Panther/System/Settings.sys")
+				end
+			elseif menu == 0 then
+				if e[3] == 2 and e[4] == 1 then
+					menu = Menu.drawSidebar()
+					menu = 1
+					term.setBackgroundColor(colors.white)
+				elseif e[3] >= 2 and e[3] <= 21 and e[4] >= 3 and e[4] <= 6 then
+					install()
+					drawProgram()
+				end
+				if icons[1] then
+					if e[3] >= icons[1] and e[3] <= icons[1]+8 and e[4] >= icons[2] and e[4] <= icons[2]+6 then         
+						deletePrompt("Panther/InstalledPrograms/"..icons[3])
+					end
+				end
+				if icons[4] then
+					if e[3] >= icons[4] and e[3] <= icons[4]+8 and e[4] >= icons[5] and e[4] <= icons[5]+6 then
+						shell.run("Panther/InstalledPrograms/"..icons[6])
+					end
+				end
+				if icons[7] then
+					if e[3] >= icons[7] and e[3] <= icons[7]+8 and e[4] >= icons[8] and e[4] <= icons[8]+6 then
+						shell.run("Panther/InstalledPrograms/"..icons[9])
+					end
+				end
+				if icons[10] then
+					if e[3] >= icons[11] and e[3] <= icons[11]+8 and e[4] >= icons[12] and e[4] <= icons[12]+6 then
+						shell.run("Panther/InstalledPrograms/"..icons[13])
+					end
+				end
+				if icons[14] then
+					if e[3] >= icons[14] and e[3] <= icons[14]+8 and e[4] >= icons[15] and e[4] <= icons[15]+6 then
+						shell.run("Panther/InstalledPrograms/"..icons[16])
+					end
+				end
+			elseif menu == 2 then
+				if e[3] >= 2 and e[3] <= 7 and e[4] >= 5 and e[4] <= 7 then
+					fs.delete(currentDelPath)
+					drawProgram()
+				elseif e[3] >= 10 and e[3] <= 14 and e[4] >= 5 and e[4] <= 7 then
+					drawProgram()
+				end
+			end
+			
+			
+		end
+	end
+end
+--Menu.drawSidebar()

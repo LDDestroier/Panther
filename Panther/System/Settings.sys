@@ -1,0 +1,275 @@
+os.loadAPI("Panther/System/API/Menu")
+
+local x, y = term.getSize()
+local menu = 0
+local data = {}
+local chosenColorF = fs.open( "Panther/UserData/color.urd", "r" )
+for line in chosenColorF.readLine do
+  data[ #data + 1 ] = line
+end
+chosenColorF.close()
+local selection = 1
+local egg = 0
+
+function drawTopbar()
+	term.setBackgroundColor(colors.gray)
+	term.setTextColor(colors.lightGray)
+	term.setCursorPos(1,1)
+	term.clearLine()
+	term.setCursorPos(2,1)
+	term.setBackgroundColor(colors.blue)
+	term.setTextColor(colors.lightBlue)
+	write("P")
+end
+
+local function drawToolbar()
+	term.setCursorPos(4,1)
+	term.setBackgroundColor(colors.lightGray)
+	term.setTextColor(colors.gray)
+	write(" Personalization ")
+	term.setCursorPos(string.len(" Personalization " )+5,1)
+	term.setBackgroundColor(colors.lightGray)
+	term.setTextColor(colors.gray)
+	write(" Security ")
+end
+
+local function huehue()
+	term.setCursorPos(4,1)
+	term.setBackgroundColor(colors.lightGray)
+	term.setTextColor(colors.gray)
+	write(" Personalization ")
+	term.setCursorPos(string.len(" Person" )+4,1)
+	term.setBackgroundColor(colors.lightGray)
+	term.setTextColor(colors.gray)
+	write(" Security ")
+end
+
+local function clear()
+	local currentY_reset = 2
+	while currentY_reset <= y do
+		term.setCursorPos(1,currentY_reset)
+		term.setBackgroundColor(colors.white)
+		term.clearLine()
+		currentY_reset = currentY_reset + 1
+	end
+	term.setCursorPos(1,2)
+end
+
+local function personalizationTab()
+	clear()
+	selection = 1
+	term.setCursorPos(2,3)
+	term.setBackgroundColor(colors.white)
+	term.setTextColor(colors.gray)
+	print("Menu Color")
+	local last = 2
+	local function drawColor(color,x)
+		term.setCursorPos(last,5)
+		term.setBackgroundColor(color)
+		term.setTextColor(colors.lightGray)
+		if color == colors.white then
+			print("\127")
+		--[[elseif data[1] == color then
+			if color ~= colors.lime then
+				term.setTextColor(colors.lime)
+			else
+				term.setTextColor(colors.green)
+			end
+			print("_")]]--
+		else
+			print(" ")
+		end
+		last = last + 2
+		
+	end
+	drawColor(colors.white)
+	drawColor(colors.lightGray)
+	drawColor(colors.orange)
+	drawColor(colors.yellow)
+	drawColor(colors.lime)
+	drawColor(colors.green)
+	drawColor(colors.lightBlue)
+	drawColor(colors.cyan)
+	drawColor(colors.blue)
+	drawColor(colors.pink)
+	drawColor(colors.magenta)
+	drawColor(colors.purple)
+	drawColor(colors.brown)
+	drawColor(colors.black)
+end
+
+local function security()
+	clear()
+	selection = 2
+	term.setCursorPos(2,3)
+	term.setBackgroundColor(colors.white)
+	term.setTextColor(colors.gray)
+	print("Password")
+	term.setCursorPos(2,4)
+	term.setBackgroundColor(colors.gray)
+	term.setTextColor(colors.lightGray)
+	write(" Click to change password ") 
+	pass = fs.open("Panther/UserData/password.urd","w")
+	
+end
+
+local function changeColor(color)
+	local chosenColorF = fs.open( "Panther/UserData/color.urd", "w" )
+	term.setBackgroundColor(colors.white)
+	chosenColorF.write(tostring(color))
+	chosenColorF.close()
+	term.setCursorPos(2,7)
+	term.setTextColor(colors.lime)
+	write("Changed menu color to "..string.gsub(color, "colors."))
+	term.setCursorPos(2,8)
+	term.setTextColor(colors.gray)
+	write("Changes will not make effect until the computer is rebooted.")
+	sleep(1)
+	personalizationTab()
+end
+
+local function drawProgram()
+	term.setBackgroundColor(colors.white)
+	term.clear()
+	
+	drawTopbar()
+	drawToolbar()
+	
+	personalizationTab()
+end
+
+drawProgram()
+
+while true do
+	e = {os.pullEvent()}
+	if e[1] == "mouse_click" then
+		if e[2] == 1 then
+			if menu == 1 then
+				if e[3] >= 2 and e[3] <= 3+string.len("Shutdown  ") and e[4] >= y-7 and e[4] <= y-5 then
+					os.shutdown()
+				elseif e[3] >= 2 and e[3] <= 3+string.len(" Reboot   ") and e[4] >= y-3 and e[4] <= y-1 then
+					os.reboot()
+				elseif e[3] >= 2 and e[3] <= 3+string.len(" Reboot   ") and e[4] >= y-3 and e[4] <= y-1 then
+					os.reboot()
+				elseif e[3] >= 2 and e[3] <= 6+string.len("Menu") and e[4] == 2 then
+					break
+				elseif e[3] == 13 and e[4] == 2 then
+					drawProgram()
+					menu = 0
+				elseif e[3] >= 2 and e[3] <= 3+string.len("Programs ") and e[4] >= 8 and e[4] <= 10 then
+					shell.run("Panther/System/Programs.sys")
+				elseif e[3] >= 2 and e[3] <= 3+string.len("Settings ") and e[4] >= 4 and e[4] <= 6 then
+					shell.run("Panther/System/Settings.sys")
+				end
+			elseif menu == 0 then
+				if e[3] == 2 and e[4] == 1 then
+					menu = Menu.drawSidebar()
+					menu = 1
+					term.setBackgroundColor(colors.white)
+				elseif e[3] == 3 and e[4] == 1 then
+					huehue()
+				elseif e[3] >=4 and e[3] <= string.len( "Personalization" )+2 and e[4] == 1 then
+					personalizationTab()
+				elseif e[3] >=22 and e[3] <= string.len( "Security" )+23 and e[4] == 1 then
+					security()
+				elseif selection == 1 then		
+					if e[3] == 2 and e[4] == 5 then
+						changeColor(1)
+					elseif e[3] == 4 and e[4] == 5 then
+						changeColor(256)
+					elseif e[3] == 6 and e[4] == 5 then
+						changeColor(2)
+					elseif e[3] == 8 and e[4] == 5 then
+						changeColor(16)
+					elseif e[3] == 10 and e[4] == 5 then
+						changeColor(32)
+					elseif e[3] == 12 and e[4] == 5 then
+						changeColor(8192)
+					elseif e[3] == 14 and e[4] == 5 then
+						changeColor(8)
+					elseif e[3] == 16 and e[4] == 5 then
+						changeColor(512)
+					elseif e[3] == 18 and e[4] == 5 then
+						changeColor(2048)
+					elseif e[3] == 20 and e[4] == 5 then
+						changeColor(64)
+					elseif e[3] == 22 and e[4] == 5 then
+						changeColor(4)
+					elseif e[3] == 24 and e[4] == 5 then
+						changeColor(1024)
+					elseif e[3] == 26 and e[4] == 5 then
+						changeColor(2048)
+					elseif e[3] == 28 and e[4] == 5 then
+						changeColor(32768)
+					end
+				elseif selection == 2 then
+					if e[3] >= 2 and e[3] <= string.len(" Click to change password ")+2 and e[4] == 4 then
+						term.setCursorPos(2,4)
+						print("                          ")
+						term.setBackgroundColor(colors.white)
+						term.setTextColor(colors.gray)
+						term.setCursorPos(2,5)
+						print("It is reccomended that your password has:")
+						term.setCursorPos(2,6)
+						print("At least 5 characters")
+						term.setCursorPos(2,7)
+						print("At least 1 uppercase letter")
+						term.setCursorPos(2,8)
+						print("At least 1 lowercase letter")
+						term.setCursorPos(2,9)
+						print("At least 1 number")
+						term.setCursorPos(2,10)
+						print("At least 1 symbol")
+						term.setCursorPos(2,11)
+						print("Don't have an obvious password (like \"password\", \"123\" or any other common passwords.)")
+						term.setCursorPos(2,4)
+						term.setCursorBlink(true)
+						passInput = read()
+
+						local charSize = 255
+						local amplitude = charSize/math.pi
+						local frequency = math.pi/charSize*8
+
+						function MDOA1(x)
+							return math.ceil(amplitude * math.sin(frequency * x) + (amplitude*(math.cos(x) % 9)))
+						end
+						function stringToInt(input)
+							if type(input) == "number" then
+								return input
+							elseif type(input) == "string" then
+								output = 0
+								for x = 1, #input do
+									output = output + input:byte(x)
+								end
+								
+								return output
+							else
+								return 0
+							end
+						end
+						function encrypt(input, key)
+							key = stringToInt(key)
+							
+							local output = ""
+							for x = 1, #input do
+								output = output .. string.char((input:byte(x) + MDOA1(x + key)) % charSize)
+							end
+							
+							return output
+						end
+
+						pass.write(encrypt(passInput,"panther-apricot-password-format"))
+						pass.close()
+						term.setCursorPos(2,4)
+						term.setBackgroundColor(colors.gray)
+						term.setTextColor(colors.lightGray)
+						print(" Password Saved           ")
+						sleep(1)
+						security()
+					end
+				end
+			end
+		end
+	end
+end
+--Menu.drawSidebar()

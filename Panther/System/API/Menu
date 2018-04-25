@@ -1,0 +1,32 @@
+local x, y = term.getSize()
+local colorF = fs.open("Panther/UserData/color.urd","r") 
+color = colorF.readAll()
+colorF.close()
+
+function drawButton(x,y,padding,height,text,textColor,backColor)
+	if textColor == nil then
+		textColor = colors.lightGray
+	end
+	if backColor == nil then
+		backColor = colors.gray
+	end
+	term.setCursorPos(x,y)
+	paintutils.drawFilledBox(x,y,x+padding+string.len(text),y+height-1,backColor)
+	term.setCursorPos(x+padding,y+math.floor(height/2))
+	term.setTextColor(textColor)
+	write(text)
+end
+function drawSidebar()
+	paintutils.drawFilledBox(1,1,14,y,tonumber(color))
+	term.setCursorPos(2,2)
+	term.setTextColor(colors.gray)
+	write("Menu")
+	drawButton(2,4,2,3,"Settings ")
+	drawButton(2,8,2,3,"Programs ")
+	drawButton(2,y-3,2,3," Reboot  ")
+	drawButton(2,y-7,2,3,"Shutdown ")
+	term.setBackgroundColor(colors.red)
+	drawButton(13,2,0,0,"X",colors.white,colors.red)
+	drawButton(6,2,2,0,"Home")
+	return 1
+end

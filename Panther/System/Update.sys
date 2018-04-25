@@ -1,0 +1,14 @@
+local function CenterText(text,y)
+	local x,ny = term.getSize()
+	term.setCursorPos(x/2-string.len(text)/2,y)
+	write(text)
+end
+term.clear()
+local x,y = term.getSize()
+CenterText("Checking for updates",(y/2)+2)
+paintutils.drawLine(x/2-11,y/2,x/2+10,y/2,colors.gray)
+sleep(0.1)
+--do thing
+paintutils.drawLine(x/2-11,y/2,x/2+10,y/2,colors.lightBlue)
+sleep(0.1)
+shell.run("Panther/System/Logon.sys")

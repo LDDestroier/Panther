@@ -1,0 +1,9 @@
+local function gitFile(user,rep,branch,path,save)
+    local download = http.get("https://raw.githubusercontent.com/"..user.."/"..rep.."/"..branch.."/"..path)
+    local data = download.readAll()
+    download.close()
+ 
+    local file = fs.open(save,"w")
+    file.write(data)
+    file.close()
+end
