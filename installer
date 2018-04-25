@@ -8,7 +8,38 @@ local function gitFile(branch,path,save)
     file.close()
 end
 
-gitFile("dev","Panther/Images/Backgrounds/")
+local x,y = term.getSize()
+
+print("Preparing...")
+gitFile("dev","Panther/System/Images/Backgrounds/LogonBackground.img",".temp/bg.img")
 
 local function drawMain()
+    image = paintutils.loadImage("temp/bg.img")
+    term.setBackgroundColor(colors.lightBlue)
+    term.clear()
+    paintutils.drawImage(image,1,1)
 end
+drawMain()
+local function CenterText(text,y)
+	local x,ny = term.getSize()
+	term.setCursorPos(x/2-string.len(text)/2,y)
+	write(text)
+end
+term.setTextColor(colors.gray)
+CenterText("Ready when you are!",y/2)
+os.pullEvent("key")
+
+CenterText("Here we go...",y/2)
+fs.makeDir("Panther")
+fs.makeDir("Panther/System")
+fs.makeDir("Panther/SystemCache")
+fs.makeDir("Panther/UserData")
+fs.makeDir("Panther/InstalledPrograms")
+fs.makeDir("Panther/System/API")
+fs.makeDir("Panther/System/Images")
+fs.makeDir("Panther/System/Images/Backgrounds")
+fs.makeDir("Panther/System/Images/StartupLogo")
+fs.makeDir("Panther/System/Images/StartupLogoMS")
+
+CenterText("Downloading files...")
+gitFile("dev","startup","startup")
