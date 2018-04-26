@@ -132,8 +132,8 @@ local function drawProgram()
 		drawIcon(name)
 	end
 	if programsFound == 0 then
-		term.setCursorPos(17,2)
-		term.setBackgroundColor(colors.lightBlue)
+		term.setCursorPos(2,7)
+		term.setBackgroundColor(colors.white)
 		term.setTextColor(colors.gray)
 		write("No programs have been installed.")
 	end

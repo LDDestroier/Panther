@@ -109,7 +109,6 @@ local function security()
 	term.setBackgroundColor(colors.gray)
 	term.setTextColor(colors.lightGray)
 	write(" Click to change password ") 
-	pass = fs.open("Panther/UserData/password.urd","w")
 	
 end
 
@@ -223,6 +222,8 @@ while true do
 						term.setCursorPos(2,11)
 						print("Don't have an obvious password (like \"password\", \"123\" or any other common passwords.)")
 						term.setCursorPos(2,4)
+						term.setBackgroundColor(colors.white)
+						term.setTextColor(colors.gray)
 						term.setCursorBlink(true)
 						passInput = read()
 
@@ -257,7 +258,8 @@ while true do
 							
 							return output
 						end
-
+						
+						pass = fs.open("Panther/UserData/password.urd","w")
 						pass.write(encrypt(passInput,"panther-apricot-password-format"))
 						pass.close()
 						term.setCursorPos(2,4)
