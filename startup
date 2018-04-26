@@ -2,13 +2,17 @@ if fs.exists("Panther/SystemCache/UserLogonInfo.inf") then
 	fs.delete("Panther/SystemCache/UserLogonInfo.inf")
 end
 
-print(os.time().."> Panther is booting")
-print(os.time().."> Checking isColor...")
+local logprint = function(text)
+	return print(os.time().."> "..text)
+end
+
+logprint("Panther is booting")
+logprint("Checking if advanced...")
 if term.isColor() then
-	print(os.time().."> Checking version...")
-	print(os.time().."> Version: "..os.version())
+	logprint("Checking version...")
+	logprint("Version: "..os.version())
 	if os.version() == "CraftOS 1.7" or os.version() == "CraftOS 1.8" then
-		print(os.time().."> Version OK.")
+		logprint("Version OK.")
 	else
 		
 		write("WARNING > Panther may crash because some functions may be nil. Please update ComputerCraft to 1.7 or 1.8")
@@ -18,13 +22,13 @@ if term.isColor() then
 			waitTime = waitTime - 1
 			
 			term.setCursorPos(x,y)
-			print(os.time().."> Resuming in "..waitTime)
+			logprint("Resuming in "..waitTime)
 			sleep(1)
 		end
 	end
-	print(os.time().."> Checking for monitor...")
+	logprint("Checking for monitor...")
 	if peripheral.find("monitor") then
-		print(os.time().."> Moitor found")
+		logprint("Monitor found.")
 		local function find( _type )
 			for _, name in ipairs( peripheral.getNames() ) do
 				if peripheral.getType( name ) == _type then
@@ -33,17 +37,17 @@ if term.isColor() then
 			end
 		end
 		monitor = find("monitor")
-		print(os.time().."> Monitor side: "..monitor)
-		print(os.time()..">  Running boot.sys on monitor "..monitor)
+		logprint("Monitor side: "..monitor)
+		logprint(" Running boot.sys on monitor "..monitor)
 		shell.run("monitor",monitor,"Panther/System/Boot.sys")
 	else
-		print(os.time().."> No monitor found.")
+		logprint("No monitor found.")
 	end
-	print(os.time().."> Ready for boot.")
+	logprint("Ready for boot.")
 	sleep(0.2)
 	shell.run("Panther/System/Boot.sys")
 else
-	print(os.time().."> Panther failed to boot!")
-	print(os.time().."> Cause: using regular computer")
-	print(os.time().."> Panther requires a Advanced computer to run.")
+	logprint("Panther failed to boot!")
+	logprint("Cause: using regular computer")
+	logprint("Panther requires a Advanced computer to run.")
 end
