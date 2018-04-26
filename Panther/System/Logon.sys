@@ -67,7 +67,7 @@ end
 
 if fs.exists("Panther/SystemCache/version.syc") then
 	local ver = fs.open("Panther/SystemCache/version.syc","r")
-	version = ver.readAll()
+	version = ver.readLine()
 	ver.close()
 end
 
@@ -140,12 +140,9 @@ while true do
             end
 		end
 	elseif e[1] == "key" then
-		if pass ~= "" then
-			sleep()
-			drawLogon()
-		else
+		if pass == "" then
 			term.setCursorPos(1,ys/2)
-			term.clearLine()
+			CenterText("                   ",ys/2)
 			CenterText("Welcome!",ys/2)
 			sleep(1)
 			playSound("logon")
@@ -153,8 +150,9 @@ while true do
 			userLogonInfo.close()
 			passF.close()
 			shell.run("Panther/System/Desktop.sys")
-			
-			
+		else
+			sleep()
+			drawLogon()
 		end
 	end
 end
