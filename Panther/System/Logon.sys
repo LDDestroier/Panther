@@ -107,17 +107,17 @@ end
 
 term.setTextColor(colors.white)
 term.setBackgroundColor(colors.lightBlue)
-CenterText("Press any key to logon",ys/2)
+CenterText("Press any key to log on",ys/2)
 playSound("startup")
 passF = fs.open("Panther/UserData/password.urd","r")
 pass = passF.readAll()
 
 while true do
 	e = {os.pullEvent()}
-    if e[1] == "mouse_click" then
-        if e[2] == 1 then
-            if e[3] >= xs/2-string.len(" Log in ")/2 and e[3] <= xs/2+string.len(" Log in ")/2 and e[4] == math.floor(ys/2+2) then
-                if pass == encrypt(input, "panther-apricot-password-format") then
+	if e[1] == "mouse_click" then
+		if e[2] == 1 then
+			if e[3] >= xs/2-string.len(" Log in ")/2 and e[3] <= xs/2+string.len(" Log in ")/2 and e[4] == math.floor(ys/2+2) then
+				if pass == encrypt(input, "panther-apricot-password-format") then
 					paintutils.drawLine(xs/2-11,ys/2,xs/2+11,ys/2,colors.white)
 					term.setTextColor(colors.gray)
 					CenterText("Welcome!",ys/2)
@@ -126,7 +126,6 @@ while true do
 					passF.close()
 					sleep(1)
 					playSound("logon")
-					
 					shell.run("Panther/System/Desktop.sys")
 				else
 					paintutils.drawLine(xs/2-11,ys/2,xs/2+11,ys/2,colors.white)
@@ -137,7 +136,7 @@ while true do
 					sleep(1)
 					drawLogon()
 				end
-            end
+			end
 		end
 	elseif e[1] == "key" then
 		if pass ~= "" then
@@ -153,8 +152,6 @@ while true do
 			userLogonInfo.close()
 			passF.close()
 			shell.run("Panther/System/Desktop.sys")
-			
-			
 		end
 	end
 end
