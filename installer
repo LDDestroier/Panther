@@ -78,7 +78,7 @@ local function gitFile(path,save,updateBar)
 		file.close()
 	end
 	if updateBar == nil then
-		drawBar(5,x-5,27,current)
+		drawBar(5,x-5,28,current)
 		current = current+ 1
 	end
 end
