@@ -8,6 +8,10 @@ for line in chosenColorF.readLine do
   data[ #data + 1 ] = line
 end
 chosenColorF.close()
+
+local scaleF = fs.open("Panther/UserData/monscale.urd","r") 
+scale = scaleF.readAll()
+scaleF.close()
 local selection = 1
 local egg = 0
 
@@ -96,6 +100,15 @@ local function personalizationTab()
 	drawColor(colors.purple)
 	drawColor(colors.brown)
 	drawColor(colors.black)
+	term.setCursorPos(2,8)
+	term.setTextColor(colors.gray)
+	term.setBackgroundColor(colors.white)
+	print("Monitor Scale")
+	term.setCursorPos(2,10)
+	term.setTextColor(colors.lightGray)
+	term.setBackgroundColor(colors.gray)
+	print(" "..scale.." (Click to change) ")
+	
 end
 
 local function security()
@@ -200,6 +213,52 @@ while true do
 						changeColor(2048)
 					elseif e[3] == 28 and e[4] == 5 then
 						changeColor(32768)
+					elseif e[3] >= 2 and e[3] <= string.len(" "..scale.." (Click to change) ") and e[4] == 10 then
+						term.setTextColor(colors.gray)
+						term.setBackgroundColor(colors.white)
+						term.setCursorPos(2,8)
+						print("Enter a number between 0.5 and 5")
+						term.setCursorPos(2,10)
+						term.clearLine()
+						term.setTextColor(colors.lightGray)
+						term.setBackgroundColor(colors.gray)
+						print("  ")
+						term.setCursorPos(3,10)
+						local input = read()
+						if tonumber(input) == nil then
+							term.setCursorPos(2,8)
+							term.setTextColor(colors.gray)
+							term.setBackgroundColor(colors.white)
+							term.clearLine()
+							print("You must enter a number.")
+							sleep(1)
+							personalizationTab()
+						else
+							if tonumber(input) >= 0.5 then
+								if tonumber(input) <= 5 then
+									local scaleF = fs.open("Panther/UserData/monscale.urd","w") 
+									scaleF.write(input)
+									scaleF.close()
+									term.setCursorPos(2,8)
+									term.setTextColor(colors.gray)
+									term.setBackgroundColor(colors.white)
+									term.clearLine()
+									print("Monitor scale set")
+								else
+									term.setCursorPos(2,8)
+									term.setTextColor(colors.gray)
+									term.setBackgroundColor(colors.white)
+									term.clearLine()
+									print("You must enter a number between 0.5 and 5")
+								end
+							else
+								term.setCursorPos(2,8)
+								term.setTextColor(colors.gray)
+								term.setBackgroundColor(colors.white)
+								term.clearLine()
+								print("You must enter a number between 0.5 and 5")
+							end
+						end
 					end
 				elseif selection == 2 then
 					if e[3] >= 2 and e[3] <= string.len(" Click to change password ")+2 and e[4] == 4 then
@@ -222,9 +281,9 @@ while true do
 						term.setCursorPos(2,11)
 						print("Don't have an obvious password (like \"password\", \"123\" or any other common passwords.)")
 						term.setCursorPos(2,4)
-						term.setBackgroundColor(colors.white)
-						term.setTextColor(colors.gray)
 						term.setCursorBlink(true)
+						term.setBackgroundColor(colors.gray)
+						term.setTextColor(colors.lightGray)
 						passInput = read()
 
 						local charSize = 255

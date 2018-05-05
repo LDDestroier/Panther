@@ -142,7 +142,7 @@ while true do
 	elseif e[1] == "key" then
 		if pass == "" then
 			term.setCursorPos(1,ys/2)
-			CenterText("                   ",ys/2)
+			CenterText("                                ",ys/2)
 			CenterText("Welcome!",ys/2)
 			sleep(1)
 			playSound("logon")

@@ -7,6 +7,7 @@ local selection = 1
 local colorF = fs.open("Panther/UserData/color.urd","r") 
 color = colorF.readAll()
 colorF.close()
+
 local currentPx = 0
 local currentPy = 0
 local icons = {}
@@ -99,7 +100,7 @@ local function install()
 	paintutils.drawLine(2,5,30,5,colors.gray)
 	term.setBackgroundColor(colors.gray)
 	term.setTextColor(colors.lightGray)
-	term.setCursorPos(2,3)
+	term.setCursorPos(2,5)
 	id = read()
 	clear()
 	term.setCursorPos(2,3)
@@ -110,7 +111,7 @@ local function install()
 	paintutils.drawLine(2,5,30,5,colors.gray)
 	term.setBackgroundColor(colors.gray)
 	term.setTextColor(colors.lightGray)
-	term.setCursorPos(2,3)
+	term.setCursorPos(2,5)
 	path = read()
 	shell.run("pastebin get "..id.." Panther/InstalledPrograms/"..path)
 end

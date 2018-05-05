@@ -79,51 +79,65 @@ end
 
 draw()
 
+local doRedraw = true
+
 while true do
-	draw()
-	e = {os.pullEvent()}
-    if e[1] == "mouse_click" then
-        if e[2] == 1 then
+	if doRedraw then
+		draw()
+	else
+		doRedraw = false
+	end
+	local e = {os.pullEvent()}
+	if e[1] == "mouse_click" then
+		if e[2] == 1 then
 			if e[3] >= 2 and e[3] <= 3+string.len("Shutdown  ") and e[4] >= ys-7 and e[4] <= ys-5 then
 				os.shutdown()
-            elseif e[3] >= 2 and e[3] <= 3+string.len(" Reboot   ") and e[4] >= ys-3 and e[4] <= ys-1 then
+			elseif e[3] >= 2 and e[3] <= 3+string.len(" Reboot   ") and e[4] >= ys-3 and e[4] <= ys-1 then
 				os.reboot()
 			elseif e[3] >= 2 and e[3] <= 3+string.len("Settings ") and e[4] >= 4 and e[4] <= 6 then
+				doRedraw = true
 				shell.run("Panther/System/Settings.sys")
 			elseif e[3] >= 2 and e[3] <= 3+string.len("Programs ") and e[4] >= 8 and e[4] <= 10 then
+				doRedraw = true
 				shell.run("Panther/System/Programs.sys")
 			--
 			end
 			
 			if desktopIcons[1] then
 				if e[3] >= desktopIcons[1] and e[3] <= desktopIcons[1]+8 and e[4] >= desktopIcons[2] and e[4] <= desktopIcons[2]+6 then
+					doRedraw = true
 					shell.run("Panther/InstalledPrograms/"..desktopIcons[6])
 				end
 			end
 			if desktopIcons[4] then
 				if e[3] >= desktopIcons[4] and e[3] <= desktopIcons[4]+8 and e[4] >= desktopIcons[5] and e[4] <= desktopIcons[5]+6 then
+					doRedraw = true
 					shell.run("Panther/InstalledPrograms/"..desktopIcons[6])
 				end
 			end
 			if desktopIcons[7] then
 				if e[3] >= desktopIcons[7] and e[3] <= desktopIcons[7]+8 and e[4] >= desktopIcons[8] and e[4] <= desktopIcons[8]+6 then
+					doRedraw = true
 					shell.run("Panther/InstalledPrograms/"..desktopIcons[9])
 				end
 			end
 			if desktopIcons[10] then
 				if e[3] >= desktopIcons[11] and e[3] <= desktopIcons[11]+8 and e[4] >= desktopIcons[12] and e[4] <= desktopIcons[12]+6 then
+					doRedraw = true
 					shell.run("Panther/InstalledPrograms/"..desktopIcons[13])
 				end
 			end
 			if desktopIcons[14] then
 				if e[3] >= desktopIcons[14] and e[3] <= desktopIcons[14]+8 and e[4] >= desktopIcons[15] and e[4] <= desktopIcons[15]+6 then
+					doRedraw = true
 					shell.run("Panther/InstalledPrograms/"..desktopIcons[16])
 				end
 			end
 		end
 	elseif e[1] == "key" then
 		if e[2] == keys.r then
-            shell.run("Panther/System/Desktop.sys")
+			doRedraw = true
+--			shell.run("Panther/System/Desktop.sys")
 		end
 	end
 end
