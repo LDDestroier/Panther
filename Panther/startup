@@ -6,6 +6,14 @@ local logprint = function(text)
 	return print(textutils.formatTime(os.time(),true).."> "..text)
 end
 
+if peripheral.find("monitor") then
+	mon = peripheral.find("monitor")
+	local scaleF = fs.open("Panther/UserData/monscale.urd")
+	scale = tonumber(scaleF.readAll())
+	scaleF.close()
+	mon.setTextScale(scale)
+end
+
 logprint("Panther is booting")
 logprint("Checking if advanced...")
 if term.isColor() then
