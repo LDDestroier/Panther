@@ -1,39 +1,88 @@
---[[
-PANTHER
-Apricot 1.0.1a
-]]--
- 
 local x,y = term.getSize()
 print("Preparing...")
+fs.delete("startup")
+local installFiles = {
+	"Panther/System/Boot.sys",
+	"Panther/System/Desktop.sys",
+	"Panther/System/Logon.sys",
+	"Panther/System/Programs.sys",
+	"Panther/System/Desktop.sys",
+	"Panther/System/Settings.sys",
+	"Panther/System/Update.sys",
+	"Panther/SystemCache/version.syc",
+	"Panther/UserData/color.urd",
+	"Panther/UserData/password.urd",
+	"Panther/System/API/Menu",
+	"Panther/System/Images/Backgrounds/LogonBackground.img",
+	"Panther/System/Images/StartupLogo/LogoAnimation1.img",
+	"Panther/System/Images/StartupLogo/LogoAnimation2.img",
+	"Panther/System/Images/StartupLogo/LogoAnimation3.img",
+	"Panther/System/Images/StartupLogo/LogoAnimation4.img",
+	"Panther/System/Images/StartupLogo/LogoAnimation5.img",
+	"Panther/System/Images/StartupLogo/LogoAnimation6.img",
+	"Panther/System/Images/StartupLogo/LogoAnimation7.img",
+	"Panther/System/Images/StartupLogoMS/LogoAnimation1.img",
+	"Panther/System/Images/StartupLogoMS/LogoAnimation2.img",
+	"Panther/System/Images/StartupLogoMS/LogoAnimation3.img",
+	"Panther/System/Images/StartupLogoMS/LogoAnimation4.img",
+	"Panther/System/Images/StartupLogoMS/LogoAnimation5.img",
+	"Panther/System/Images/StartupLogoMS/LogoAnimation6.img",
+	"Panther/System/Images/StartupLogoMS/LogoAnimation7.img",
+	"startup"
+}
+
 local function drawMain()
-    local image = paintutils.loadImage(".temp/bg.img")
-    term.setBackgroundColor(colors.lightBlue)
-    term.clear()
-    paintutils.drawImage(image,1,1)
+	local image = paintutils.loadImage(".temp/bg.img")
+	term.setBackgroundColor(colors.lightBlue)
+	term.clear()
+	paintutils.drawImage(image,1,1)
 end
+
 local function CenterText(text,y)
-    local x,ny = term.getSize()
-    term.setCursorPos(x/2-string.len(text)/2,y)
-    write(text)
+	local x,ny = term.getSize()
+	term.setCursorPos(x/2-string.len(text)/2,y)
+	write(text)
 end
-local function gitFile(branch,path,save)    term.setCursorPos(1,y-2)
-    term.clearLine()
-    term.setCursorPos(1,y-1)
-    term.clearLine()
-    term.setCursorPos(1,y)
-    term.clearLine()
-    CenterText("/MarcoPolo0306/Panther/"..branch.."/",y-2)
-    CenterText(path..", "..save,y-1)
-    local download = http.get("https://raw.githubusercontent.com/MarcoPolo0306/Panther/"..branch.."/System/"..path)
+
+local current = 1
+
+local function drawBar(startX,endX,fileAmount,currentFile)
+	paintutils.drawLine(startX, y/2+2, endX, y/2+2, colors.gray)
+	term.setBackgroundColor(colors.cyan)
+	term.setCursorPos(startX, y/2+2)
+	term.write(string.rep(" ",currentFile/fileAmount*(endX-startX)))
+end
+
+local function gitFile(path,save,updateBar)
+	term.setBackgroundColor(colors.lightBlue)
+	term.setTextColor(colors.gray)
+	term.setCursorPos(1,y-2)
+	term.clearLine()
+	term.setCursorPos(1,y-1)
+	term.clearLine()
+	term.setCursorPos(1,y)
+	term.clearLine()
+	
+    local download = http.get("https://raw.githubusercontent.com/MarcoPolo0306/Panther/dev/Panther/"..path)
     local data = download.readAll()
     download.close()
  
-    local file = fs.open(save,"w")
-    file.write(data)
-    file.close()
- 
+	if save then
+		local file = fs.open(save,"w")
+		file.write(data)
+		file.close()
+	else
+		local file = fs.open(path,"w")
+		file.write(data)
+		file.close()
+	end
+	if updateBar == nil then
+		drawBar(5,x-5,27,current)
+		current = current+ 1
+	end
 end
-gitFile("dev","Panther/System/Images/Backgrounds/LogonBackground.img",".temp/bg.img")
+
+gitFile("Panther/System/Images/Backgrounds/LogonBackground.img",".temp/bg.img",true)
 drawMain()
 term.setTextColor(colors.gray)
 term.setBackgroundColor(colors.lightBlue)
@@ -42,7 +91,7 @@ term.setTextColor(colors.lightGray)
 CenterText("Press any key to begin",y/2+1)
 term.setTextColor(colors.gray)
 os.pullEvent("key")
- 
+
 CenterText("    Here we go!    ",y/2)
 CenterText("                          ",y/2+1)
 fs.makeDir("Panther")
@@ -55,34 +104,14 @@ fs.makeDir("Panther/System/Images")
 fs.makeDir("Panther/System/Images/Backgrounds")
 fs.makeDir("Panther/System/Images/StartupLogo")
 fs.makeDir("Panther/System/Images/StartupLogoMS")
-sleep(1)
- 
+
 CenterText("Downloading files...",y-3)
-gitFile("dev","Panther/System/API/Menu","Panther/System/API/Menu")
-gitFile("dev","Panther/System/Images/Backgrounds/LogonBackground.img","Panther/System/Images/Backgrounds/LogonBackground.img")
-local currentImg = 1
-while currentImg < 8 do
-    gitFile("dev","Panther/System/Images/StartupLogo/LogoAnimation"..currentImg..".img","Panther/System/Images/StartupLogo/LogoAnimation"..currentImg..".img")
-    currentImg = currentImg + 1
+for _, install in ipairs(installFiles) do
+	gitFile(install)
 end
-currentImg = 1
-while currentImg < 8 do
-    gitFile("dev","Panther/System/Images/StartupLogoMS/LogoAnimation"..currentImg..".img","Panther/System/Images/StartupLogoMS/LogoAnimation"..currentImg..".img")
-    currentImg = currentImg + 1
-end
-gitFile("dev","Panther/System/Boot.sys","Panther/System/Boot.sys")
-gitFile("dev","Panther/System/Desktop.sys","Panther/System/Desktop.sys")
-gitFile("dev","Panther/System/Logon.sys","Panther/System/Logon.sys")
-gitFile("dev","Panther/System/Programs.sys","Panther/System/Programs.sys")
-gitFile("dev","Panther/System/Desktop.sys","Panther/System/Desktop.sys")
-gitFile("dev","Panther/System/Settings.sys","Panther/System/Settings.sys")
-gitFile("dev","Panther/System/Update.sys","Panther/System/Update.sys")
-gitFile("dev","Panther/SystemCache/version.syc","Panther/SystemCache/version.syc")
-gitFile("dev","Panther/UserData/color.urd","Panther/UserData/color.urd")
-gitFile("dev","Panther/UserData/password.urd","Panther/UserData/password.urd")
-gitFile("dev","Panther/UserData/monscale.urd","Panther/UserData/monscale.urd")
-gitFile("dev","startup","startup")
+
 fs.delete(".temp")
+term.setBackgroundColor(colors.lightBlue)
 term.setCursorPos(1,y-3)
 term.clearLine()
 term.setCursorPos(1,y-2)
@@ -91,20 +120,15 @@ term.setCursorPos(1,y-1)
 term.clearLine()
 term.setCursorPos(1,y)
 term.clearLine()
+term.setCursorPos(1,y/2+2)
+term.clearLine()
 CenterText("      Complete!      ",y/2)
 term.setTextColor(colors.lightGray)
 CenterText("Press any key to reboot",y/2+1)
+
 term.setTextColor(colors.gray)
-disk.eject("left")
-disk.eject("right")
-disk.eject("bottom")
-disk.eject("back")
-disk.eject("front")
-disk.eject("top")
-disk.eject("disk_0")
-disk.eject("disk_1")
-disk.eject("disk_2")
-disk.eject("disk_3")
-disk.eject("disk_4")
-os.pullEvent("key")
+os.pullEvent()
 os.reboot()
+
+
+
