@@ -1,32 +1,37 @@
+--[[
+PANTHER
+Apricot 1.0.1a
+]]--
+ 
 local x,y = term.getSize()
 print("Preparing...")
 local function drawMain()
-	local image = paintutils.loadImage(".temp/bg.img")
-	term.setBackgroundColor(colors.lightBlue)
-	term.clear()
-	paintutils.drawImage(image,1,1)
+    local image = paintutils.loadImage(".temp/bg.img")
+    term.setBackgroundColor(colors.lightBlue)
+    term.clear()
+    paintutils.drawImage(image,1,1)
 end
 local function CenterText(text,y)
-	local x,ny = term.getSize()
-	term.setCursorPos(x/2-string.len(text)/2,y)
-	write(text)
+    local x,ny = term.getSize()
+    term.setCursorPos(x/2-string.len(text)/2,y)
+    write(text)
 end
-local function gitFile(branch,path,save)	term.setCursorPos(1,y-2)
-	term.clearLine()
-	term.setCursorPos(1,y-1)
-	term.clearLine()
-	term.setCursorPos(1,y)
-	term.clearLine()
-	CenterText("/MarcoPolo0306/Panther/"..branch.."/",y-2)
-	CenterText(path..", "..save,y-1)
-    local download = http.get("https://raw.githubusercontent.com/MarcoPolo0306/Panther/"..branch.."/"..path)
+local function gitFile(branch,path,save)    term.setCursorPos(1,y-2)
+    term.clearLine()
+    term.setCursorPos(1,y-1)
+    term.clearLine()
+    term.setCursorPos(1,y)
+    term.clearLine()
+    CenterText("/MarcoPolo0306/Panther/"..branch.."/",y-2)
+    CenterText(path..", "..save,y-1)
+    local download = http.get("https://raw.githubusercontent.com/MarcoPolo0306/Panther/"..branch.."/System/"..path)
     local data = download.readAll()
     download.close()
  
     local file = fs.open(save,"w")
     file.write(data)
     file.close()
-
+ 
 end
 gitFile("dev","Panther/System/Images/Backgrounds/LogonBackground.img",".temp/bg.img")
 drawMain()
@@ -37,7 +42,7 @@ term.setTextColor(colors.lightGray)
 CenterText("Press any key to begin",y/2+1)
 term.setTextColor(colors.gray)
 os.pullEvent("key")
-
+ 
 CenterText("    Here we go!    ",y/2)
 CenterText("                          ",y/2+1)
 fs.makeDir("Panther")
@@ -51,19 +56,19 @@ fs.makeDir("Panther/System/Images/Backgrounds")
 fs.makeDir("Panther/System/Images/StartupLogo")
 fs.makeDir("Panther/System/Images/StartupLogoMS")
 sleep(1)
-
+ 
 CenterText("Downloading files...",y-3)
 gitFile("dev","Panther/System/API/Menu","Panther/System/API/Menu")
 gitFile("dev","Panther/System/Images/Backgrounds/LogonBackground.img","Panther/System/Images/Backgrounds/LogonBackground.img")
 local currentImg = 1
 while currentImg < 8 do
-	gitFile("dev","Panther/System/Images/StartupLogo/LogoAnimation"..currentImg..".img","Panther/System/Images/StartupLogo/LogoAnimation"..currentImg..".img")
-	currentImg = currentImg + 1
+    gitFile("dev","Panther/System/Images/StartupLogo/LogoAnimation"..currentImg..".img","Panther/System/Images/StartupLogo/LogoAnimation"..currentImg..".img")
+    currentImg = currentImg + 1
 end
 currentImg = 1
 while currentImg < 8 do
-	gitFile("dev","Panther/System/Images/StartupLogoMS/LogoAnimation"..currentImg..".img","Panther/System/Images/StartupLogoMS/LogoAnimation"..currentImg..".img")
-	currentImg = currentImg + 1
+    gitFile("dev","Panther/System/Images/StartupLogoMS/LogoAnimation"..currentImg..".img","Panther/System/Images/StartupLogoMS/LogoAnimation"..currentImg..".img")
+    currentImg = currentImg + 1
 end
 gitFile("dev","Panther/System/Boot.sys","Panther/System/Boot.sys")
 gitFile("dev","Panther/System/Desktop.sys","Panther/System/Desktop.sys")
@@ -75,6 +80,7 @@ gitFile("dev","Panther/System/Update.sys","Panther/System/Update.sys")
 gitFile("dev","Panther/SystemCache/version.syc","Panther/SystemCache/version.syc")
 gitFile("dev","Panther/UserData/color.urd","Panther/UserData/color.urd")
 gitFile("dev","Panther/UserData/password.urd","Panther/UserData/password.urd")
+gitFile("dev","Panther/UserData/monscale.urd","Panther/UserData/monscale.urd")
 gitFile("dev","startup","startup")
 fs.delete(".temp")
 term.setCursorPos(1,y-3)
@@ -89,8 +95,16 @@ CenterText("      Complete!      ",y/2)
 term.setTextColor(colors.lightGray)
 CenterText("Press any key to reboot",y/2+1)
 term.setTextColor(colors.gray)
+disk.eject("left")
+disk.eject("right")
+disk.eject("bottom")
+disk.eject("back")
+disk.eject("front")
+disk.eject("top")
+disk.eject("disk_0")
+disk.eject("disk_1")
+disk.eject("disk_2")
+disk.eject("disk_3")
+disk.eject("disk_4")
 os.pullEvent("key")
 os.reboot()
-
-
-
