@@ -12,6 +12,7 @@ local installFiles = {
 	"Panther/SystemCache/version.syc",
 	"Panther/UserData/color.urd",
 	"Panther/UserData/password.urd",
+	"Panther/UserData/monscale.urd",
 	"Panther/System/API/Menu",
 	"Panther/System/Images/Backgrounds/LogonBackground.img",
 	"Panther/System/Images/StartupLogo/LogoAnimation1.img",
