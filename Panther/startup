@@ -8,7 +8,7 @@ end
 
 if peripheral.find("monitor") then
 	mon = peripheral.find("monitor")
-	local scaleF = fs.open("Panther/UserData/monscale.urd")
+	local scaleF = fs.open("Panther/UserData/monscale.urd","r")
 	scale = tonumber(scaleF.readAll())
 	scaleF.close()
 	mon.setTextScale(scale)
