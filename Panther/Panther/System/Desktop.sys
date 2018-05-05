@@ -76,15 +76,11 @@ function draw()
 	end
 end
 
-
-draw()
-
 local doRedraw = true
 
 while true do
 	if doRedraw then
 		draw()
-	else
 		doRedraw = false
 	end
 	local e = {os.pullEvent()}
